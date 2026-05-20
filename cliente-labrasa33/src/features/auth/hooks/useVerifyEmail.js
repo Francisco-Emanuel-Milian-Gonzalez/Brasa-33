@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { verifyEmail as verifyEmailRequest } from '../../../shared/api';
 import { showError, showSuccess } from '../../../shared/utils/toast.js';
 
-// Evita múltiples requests en React StrictMode (montaje doble).
 const verifyPromiseByToken = new Map();
 const verifyResultByToken = new Map();
 const toastShownByToken = new Map();
@@ -30,7 +29,6 @@ export const useVerifyEmail = (token, onSuccess) => {
         return;
       }
 
-      // Si ya se resolvió previamente, reusar resultado.
       const cached = verifyResultByToken.get(token);
       if (cached) {
         if (!toastShownByToken.get(token)) {
@@ -50,7 +48,6 @@ export const useVerifyEmail = (token, onSuccess) => {
         return;
       }
 
-      // Si ya hay un request en curso para este token, reusar la promesa.
       let promise = verifyPromiseByToken.get(token);
       if (!promise) {
         promise = verifyEmailRequest(token)
