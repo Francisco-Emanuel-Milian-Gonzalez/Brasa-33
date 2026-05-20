@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/authStore.js';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-export const LoginForm = ({ onForgot }) => {
+export const LoginForm = ({ onForgot, onRegister }) => {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
@@ -19,7 +19,7 @@ export const LoginForm = ({ onForgot }) => {
     const res = await login(data);
     if (res.success) {
       navigate('/dashboard');
-      toast.success('¡Bienvenido a Kinal Sports Admin!', { duration: 2000 });
+      toast.success('¡Bienvenido al restaurante La 33!', { duration: 2000 });
     }
   };
 
@@ -33,7 +33,7 @@ export const LoginForm = ({ onForgot }) => {
           type='text'
           id='emailOrUsername'
           placeholder='ejemplo@correo.com'
-          className='w-full px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-2 transition-all'
+          className='w-full px-3 py-2 text-sm rounded-lg focus:ring-2 transition-all'
           style={{ backgroundColor: '#333333', borderColor: '#333333', color: '#F2F2F2', border: '1px solid #333333', outline: 'none' }}
           {...register('emailOrUsername', {
             required: 'El email o username es obligatorio',
@@ -52,7 +52,7 @@ export const LoginForm = ({ onForgot }) => {
           type='password'
           id='password'
           placeholder='••••••••'
-          className='w-full px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-2 transition-all'
+          className='w-full px-3 py-2 text-sm rounded-lg focus:ring-2 transition-all'
           style={{ backgroundColor: '#333333', borderColor: '#333333', color: '#F2F2F2', border: '1px solid #333333', outline: 'none' }}
           {...register('password', {
             required: 'La contraseña es obligatoria',
@@ -60,7 +60,21 @@ export const LoginForm = ({ onForgot }) => {
         />
         {errors.password && <p className='text-red-500 text-xs mt-1'>{errors.password.message}</p>}
       </div>
+
+      
+      <div className='text-right text-sm'>
+        <button
+          type='button'
+          onClick={onForgot}
+          className='hover:underline hover:cursor-pointer'
+          style={{ color: '#A6A6A6' }}
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+      </div>
+
       {error && <p className='text-red-500 text-sm text-center'>{error}</p>}
+
       <button
         type='submit'
         disabled={loading}
@@ -69,14 +83,17 @@ export const LoginForm = ({ onForgot }) => {
       >
         Iniciar Sesión
       </button>
-      <p className='text-center text-sm'>
+
+      
+      <p className='text-center text-sm mt-4'>
+        <span style={{ color: '#A6A6A6' }}>¿No tienes cuenta?{' '}</span>
         <button
           type='button'
-          onClick={onForgot}
-          className='hover:underline hover:cursor-pointer'
-          style={{ color: '#A6A6A6' }}
+          onClick={onRegister}
+          className='hover:underline hover:cursor-pointer font-semibold'
+          style={{ color: '#F2F2F2' }}
         >
-          ¿Olvidaste tu contraseña?
+          Regístrate
         </button>
       </p>
     </form>
