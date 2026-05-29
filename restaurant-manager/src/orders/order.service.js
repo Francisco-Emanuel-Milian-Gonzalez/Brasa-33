@@ -4,14 +4,37 @@ import {
   getAllOrders,
   getOrderById as getOrderByIdModel,
   getOrdersByUserId,
+  getOrdersByRestaurant as getOrdersByRestaurantModel,
   updateOrderStatus as updateOrderStatusModel,
   getDishById,
-  decrementDishStock,
   restoreDishStock,
   getOrderWithItems,
 } from './order.model.js';
+import { pool } from '../config/db.js';
+import { createPayment, getPaymentByOrderId } from '../payments/payment.model.js';
+import { createInvoiceForOrder } from '../invoices/invoice.service.js';
+import { createNotification, notifyRestaurantManager } from '../utils/notifications.js';
 
-const VALID_STATUSES = ['pending', 'confirmed', 'completed', 'cancelled'];
+const VALID_STATUSES = ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'];
+
+/** Pago y factura al marcar el pedido como completado (cualquier método de pago). */
+const finalizeOrderOnComplete = async (order) => {
+  const orderTotal = parseFloat(order.total) || 0;
+  if (orderTotal <= 0) return;
+
+  const method = order.payment_method || 'cash';
+
+  const existingPayment = await getPaymentByOrderId(order.id);
+  if (!existingPayment) {
+    await createPayment(order.id, order.user_id, orderTotal, method);
+  }
+
+  try {
+    await createInvoiceForOrder(order.id, order.user_id);
+  } catch (err) {
+    if (err.status !== 409) throw err;
+  }
+};
 
 const validateOrderItems = (items) => {
   if (!items || !Array.isArray(items) || items.length === 0) {
@@ -35,13 +58,12 @@ const validateOrderItems = (items) => {
   });
 };
 
-export const createOrder = async (userId, items) => {
+export const createOrder = async (userId, items, restaurantId = null, notes = null, paymentMethod = 'cash', cardLastFour = null) => {
   validateOrderItems(items);
 
   let total = 0;
   const validatedItems = [];
 
-  // Validar que todos los platos existan y tengan stock
   for (const item of items) {
     const dish = await getDishById(item.menu_id);
 
@@ -65,22 +87,63 @@ export const createOrder = async (userId, items) => {
     });
   }
 
-  // Crear orden con total calculado
-  const order = await createOrderModel(userId, total);
+  const orderTotal = parseFloat(total.toFixed(2));
+  const orderStatus = 'pending';
+  const paidAt = null;
 
-  // Crear order items y descontar stock
-  await createOrderItems(order.id, validatedItems);
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const order = await createOrderModel(
+      client,
+      userId,
+      orderTotal,
+      restaurantId,
+      notes,
+      paymentMethod,
+      cardLastFour,
+      orderStatus,
+      paidAt,
+    );
+    await createOrderItems(client, order.id, validatedItems);
+    for (const item of validatedItems) {
+      await client.query(
+        'UPDATE menu SET stock = stock - $1 WHERE id = $2',
+        [item.quantity, item.menu_id],
+      );
+    }
+    await client.query('COMMIT');
 
-  for (const item of validatedItems) {
-    await decrementDishStock(item.menu_id, item.quantity);
+    if (restaurantId) {
+      await notifyRestaurantManager(restaurantId, {
+        title: 'Nuevo pedido recibido',
+        message: `Pedido #${order.id} — ${paymentMethod === 'card' ? 'tarjeta' : 'contra entrega'}`,
+        type: 'order',
+      });
+    }
+
+    await createNotification({
+      userId,
+      title: 'Pedido registrado',
+      message: `Tu pedido #${order.id} está pendiente. El restaurante lo confirmará pronto.`,
+      type: 'order',
+    });
+
+    return await getOrderWithItems(order.id);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
-
-  // Retornar orden completa con items
-  return await getOrderWithItems(order.id);
 };
 
 export const getOrders = async () => {
   return await getAllOrders();
+};
+
+export const getOrdersByRestaurant = async (restaurantId) => {
+  return await getOrdersByRestaurantModel(restaurantId);
 };
 
 export const getMyOrders = async (userId) => {
@@ -141,15 +204,38 @@ export const updateOrderStatus = async (id, status) => {
   }
 
   await updateOrderStatusModel(id, status);
-  return await getOrderWithItems(id);
+
+  if (status === 'completed') {
+    const completedOrder = await getOrderWithItems(id);
+    await finalizeOrderOnComplete(completedOrder);
+  }
+
+  const updated = await getOrderWithItems(id);
+
+  if (status === 'ready' && order.user_id) {
+    await createNotification({
+      userId: order.user_id,
+      title: 'Tu pedido está listo',
+      message: `El pedido #${id} está listo para recoger o entrega.`,
+      type: 'order',
+    });
+  }
+
+  return updated;
 };
 
-export const cancelOrder = async (id) => {
+export const cancelOrder = async (id, userId = null, userRole = null) => {
   const order = await getOrderWithItems(id);
 
   if (!order) {
     const error = new Error('Order not found');
     error.status = 404;
+    throw error;
+  }
+
+  if (userRole === 'client' && order.user_id !== userId) {
+    const error = new Error('No tienes permiso para cancelar esta orden');
+    error.status = 403;
     throw error;
   }
 
@@ -165,7 +251,6 @@ export const cancelOrder = async (id) => {
     throw error;
   }
 
-  // Restaurar stock de los platos
   for (const item of order.items) {
     await restoreDishStock(item.menu_id, item.quantity);
   }

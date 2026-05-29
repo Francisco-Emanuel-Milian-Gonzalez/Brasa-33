@@ -5,9 +5,14 @@ import {
   getTopProducts,
   getOrdersByStatus,
   getReservationsReport,
+  getTopCustomers,
 } from './report.controller.js';
+import { validateJwt } from '../middlewares/validateJwt.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
+
+const adminOrManager = [validateJwt, authorizeRole('admin', 'manager')];
 
 /**
  * @swagger
@@ -41,7 +46,7 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/total-revenue', getTotalRevenue);
+router.get('/total-revenue', ...adminOrManager, getTotalRevenue);
 
 /**
  * @swagger
@@ -96,7 +101,7 @@ router.get('/total-revenue', getTotalRevenue);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/sales-by-date', getSalesByDate);
+router.get('/sales-by-date', ...adminOrManager, getSalesByDate);
 
 /**
  * @swagger
@@ -146,7 +151,7 @@ router.get('/sales-by-date', getSalesByDate);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/top-products', getTopProducts);
+router.get('/top-products', ...adminOrManager, getTopProducts);
 
 /**
  * @swagger
@@ -191,7 +196,7 @@ router.get('/top-products', getTopProducts);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/orders-by-status', getOrdersByStatus);
+router.get('/orders-by-status', ...adminOrManager, getOrdersByStatus);
 
 /**
  * @swagger
@@ -252,6 +257,7 @@ router.get('/orders-by-status', getOrdersByStatus);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/reservations-report', getReservationsReport);
+router.get('/reservations-report', ...adminOrManager, getReservationsReport);
+router.get('/manager/top-customers', ...adminOrManager, getTopCustomers);
 
 export default router;

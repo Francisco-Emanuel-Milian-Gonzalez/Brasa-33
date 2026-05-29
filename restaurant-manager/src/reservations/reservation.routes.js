@@ -2,12 +2,16 @@ import { Router } from 'express';
 import {
   createReservation,
   getReservations,
+  getReservationsByRestaurant,
   getMyReservations,
   getReservationById,
+  updateReservation,
   cancelReservation,
   completeReservation,
+  confirmReservation,
 } from './reservation.controller.js';
 import { validateJwt } from '../middlewares/validateJwt.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
 
@@ -93,7 +97,7 @@ router.post('/', validateJwt, createReservation);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', getReservations);
+router.get('/', validateJwt, authorizeRole('admin', 'manager'), getReservations);
 
 /**
  * @swagger
@@ -126,6 +130,32 @@ router.get('/', getReservations);
  *         description: Error interno del servidor
  */
 router.get('/my-reservations', validateJwt, getMyReservations);
+
+/**
+ * @swagger
+ * /brasa33/v1/reservations/restaurant/{restaurantId}:
+ *   get:
+ *     summary: Reservaciones de un restaurante (gerente/admin)
+ *     description: Retorna todas las reservaciones asignadas a un restaurante en tiempo real.
+ *     tags:
+ *       - Reservaciones
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: restaurantId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de reservaciones del restaurante
+ *       403:
+ *         description: Rol insuficiente
+ *       404:
+ *         description: Restaurante no encontrado
+ */
+router.get('/restaurant/:restaurantId', validateJwt, authorizeRole('admin', 'manager'), getReservationsByRestaurant);
 
 /**
  * @swagger
@@ -201,6 +231,56 @@ router.get('/:id', getReservationById);
  *       500:
  *         description: Error interno del servidor
  */
+/**
+ * @swagger
+ * /brasa33/v1/reservations/{id}:
+ *   put:
+ *     summary: Modificar reservación
+ *     description: El cliente puede modificar su reservación (fecha, hora, personas, tipo, notas) siempre que no esté cancelada o completada.
+ *     tags:
+ *       - Reservaciones
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 example: 2026-07-15
+ *               time:
+ *                 type: string
+ *                 example: "19:30"
+ *               people_count:
+ *                 type: integer
+ *                 example: 6
+ *               type:
+ *                 type: string
+ *                 enum: [table, delivery, takeaway]
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Reservación actualizada
+ *       400:
+ *         description: No se puede modificar o datos inválidos
+ *       403:
+ *         description: Sin permiso para modificar esta reservación
+ *       404:
+ *         description: Reservación no encontrada
+ */
+router.put('/:id', validateJwt, updateReservation);
+
 router.patch('/:id/cancel', validateJwt, cancelReservation);
 
 /**
@@ -241,6 +321,7 @@ router.patch('/:id/cancel', validateJwt, cancelReservation);
  *       500:
  *         description: Error interno del servidor
  */
-router.patch('/:id/complete', validateJwt, completeReservation);
+router.patch('/:id/confirm', validateJwt, authorizeRole('admin', 'manager'), confirmReservation);
+router.patch('/:id/complete', validateJwt, authorizeRole('admin', 'manager'), completeReservation);
 
 export default router;
