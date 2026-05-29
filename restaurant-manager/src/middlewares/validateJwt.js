@@ -15,9 +15,17 @@ export const validateJwt = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, secret);
-    req.user = decoded;
+
+    // El auth-service guarda el userId en "sub" (estándar JWT)
+    // Lo mapeamos a "id" para que req.user.id funcione en todos los controladores
+    req.user = {
+      ...decoded,
+      id:   decoded.sub,
+      role: decoded.role,
+    };
+
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({ success: false, message: 'Token inválido o expirado' });
   }
 };

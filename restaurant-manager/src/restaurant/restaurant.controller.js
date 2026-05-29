@@ -3,12 +3,13 @@ import {
   getRestaurants as getRestaurantsService,
   getRestaurantById as getRestaurantByIdService,
   updateRestaurant as updateRestaurantService,
+  assignManager as assignManagerService,
   deleteRestaurant as deleteRestaurantService,
 } from './restaurant.service.js';
 
 export const createRestaurant = async (req, res, next) => {
   try {
-    const restaurant = await createRestaurantService(req.body);
+    const restaurant = await createRestaurantService(req.body, req.file);
     res.status(201).json({ success: true, data: restaurant });
   } catch (error) {
     next(error);
@@ -26,9 +27,7 @@ export const getRestaurants = async (req, res, next) => {
 
 export const getRestaurantById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const restaurant = await getRestaurantByIdService(id);
-
+    const restaurant = await getRestaurantByIdService(req.params.id);
     res.status(200).json({ success: true, data: restaurant });
   } catch (error) {
     next(error);
@@ -37,9 +36,17 @@ export const getRestaurantById = async (req, res, next) => {
 
 export const updateRestaurant = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const restaurant = await updateRestaurantService(id, req.body);
+    const restaurant = await updateRestaurantService(req.params.id, req.body, req.file);
+    res.status(200).json({ success: true, data: restaurant });
+  } catch (error) {
+    next(error);
+  }
+};
 
+export const assignManager = async (req, res, next) => {
+  try {
+    const { manager_id: managerId } = req.body;
+    const restaurant = await assignManagerService(req.params.id, managerId ?? null);
     res.status(200).json({ success: true, data: restaurant });
   } catch (error) {
     next(error);
@@ -48,9 +55,7 @@ export const updateRestaurant = async (req, res, next) => {
 
 export const deleteRestaurant = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    await deleteRestaurantService(id);
-
+    await deleteRestaurantService(req.params.id);
     res.status(200).json({ success: true, message: 'Restaurant deleted successfully' });
   } catch (error) {
     next(error);

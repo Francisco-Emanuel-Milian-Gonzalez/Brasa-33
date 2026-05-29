@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   createOrder,
   getOrders,
+  getOrdersByRestaurant,
   getMyOrders,
   getOrderById,
   confirmOrder,
@@ -9,6 +10,7 @@ import {
   cancelOrder,
 } from './order.controller.js';
 import { validateJwt } from '../middlewares/validateJwt.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
 
@@ -94,7 +96,7 @@ router.post('/', validateJwt, createOrder);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', getOrders);
+router.get('/', validateJwt, authorizeRole('admin'), getOrders);
 
 /**
  * @swagger
@@ -127,6 +129,30 @@ router.get('/', getOrders);
  *         description: Error interno del servidor
  */
 router.get('/my-orders', validateJwt, getMyOrders);
+
+/**
+ * @swagger
+ * /brasa33/v1/orders/restaurant/{restaurantId}:
+ *   get:
+ *     summary: Pedidos de un restaurante (gerente/admin)
+ *     description: Retorna todos los pedidos asociados a un restaurante. Solo gerentes y administradores.
+ *     tags:
+ *       - Órdenes
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: restaurantId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de pedidos del restaurante
+ *       403:
+ *         description: Rol insuficiente
+ */
+router.get('/restaurant/:restaurantId', validateJwt, authorizeRole('admin', 'manager'), getOrdersByRestaurant);
 
 /**
  * @swagger
@@ -202,7 +228,7 @@ router.get('/:id', getOrderById);
  *       500:
  *         description: Error interno del servidor
  */
-router.patch('/:id/confirm', validateJwt, confirmOrder);
+router.patch('/:id/confirm', validateJwt, authorizeRole('admin', 'manager'), confirmOrder);
 
 /**
  * @swagger
@@ -257,7 +283,7 @@ router.patch('/:id/confirm', validateJwt, confirmOrder);
  *       500:
  *         description: Error interno del servidor
  */
-router.patch('/:id/status', validateJwt, updateOrderStatus);
+router.patch('/:id/status', validateJwt, authorizeRole('admin', 'manager'), updateOrderStatus);
 
 /**
  * @swagger

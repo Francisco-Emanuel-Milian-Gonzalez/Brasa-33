@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 import {
   createDish,
   getDishes,
@@ -9,8 +10,10 @@ import {
   deleteDish,
 } from './menu.controller.js';
 import { validateJwt } from '../middlewares/validateJwt.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
@@ -70,7 +73,7 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', validateJwt, createDish);
+router.post('/', validateJwt, authorizeRole('admin', 'manager'), upload.single('image'), createDish);
 
 /**
  * @swagger
@@ -99,42 +102,6 @@ router.post('/', validateJwt, createDish);
  *         description: Error interno del servidor
  */
 router.get('/', getDishes);
-
-/**
- * @swagger
- * /brasa33/v1/menu/{id}:
- *   get:
- *     summary: Obtener plato por ID
- *     description: Obtiene los detalles completos de un plato específico del menú.
- *     tags:
- *       - Menú
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID del plato
- *         example: 1
- *     responses:
- *       200:
- *         description: Plato obtenido exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   $ref: '#/components/schemas/Dish'
- *       404:
- *         description: Plato no encontrado
- *       500:
- *         description: Error interno del servidor
- */
-router.get('/:id', getDishById);
 
 /**
  * @swagger
@@ -173,6 +140,42 @@ router.get('/:id', getDishById);
  *         description: Error interno del servidor
  */
 router.get('/restaurant/:restaurantId', getDishesByRestaurant);
+
+/**
+ * @swagger
+ * /brasa33/v1/menu/{id}:
+ *   get:
+ *     summary: Obtener plato por ID
+ *     description: Obtiene los detalles completos de un plato específico del menú.
+ *     tags:
+ *       - Menú
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del plato
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Plato obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Dish'
+ *       404:
+ *         description: Plato no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', getDishById);
 
 /**
  * @swagger
@@ -234,7 +237,7 @@ router.get('/restaurant/:restaurantId', getDishesByRestaurant);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', validateJwt, updateDish);
+router.put('/:id', validateJwt, authorizeRole('admin', 'manager'), upload.single('image'), updateDish);
 
 /**
  * @swagger
@@ -288,7 +291,7 @@ router.put('/:id', validateJwt, updateDish);
  *       500:
  *         description: Error interno del servidor
  */
-router.patch('/:id/stock', validateJwt, updateDishStock);
+router.patch('/:id/stock', validateJwt, authorizeRole('admin', 'manager'), updateDishStock);
 
 /**
  * @swagger
@@ -329,6 +332,6 @@ router.patch('/:id/stock', validateJwt, updateDishStock);
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', validateJwt, deleteDish);
+router.delete('/:id', validateJwt, authorizeRole('admin', 'manager'), deleteDish);
 
 export default router;

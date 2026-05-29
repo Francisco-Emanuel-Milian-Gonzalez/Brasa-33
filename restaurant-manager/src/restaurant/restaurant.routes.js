@@ -1,14 +1,18 @@
 import { Router } from 'express';
+import multer from 'multer';
 import {
   createRestaurant,
   getRestaurants,
   getRestaurantById,
   updateRestaurant,
+  assignManager,
   deleteRestaurant,
 } from './restaurant.controller.js';
 import { validateJwt } from '../middlewares/validateJwt.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
 /**
  * @swagger
@@ -23,7 +27,7 @@ const router = Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -40,6 +44,15 @@ const router = Router();
  *               phone:
  *                 type: string
  *                 example: +57 1 500 0000
+ *               email:
+ *                 type: string
+ *                 example: sucursal@brasa33.com
+ *               description:
+ *                 type: string
+ *                 example: Sucursal principal del centro
+ *               logo:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Restaurante creado exitosamente
@@ -64,7 +77,7 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', validateJwt, createRestaurant);
+router.post('/', validateJwt, authorizeRole('admin'), upload.single('logo'), createRestaurant);
 
 /**
  * @swagger
@@ -128,6 +141,8 @@ router.get('/', getRestaurants);
  *       500:
  *         description: Error interno del servidor
  */
+router.put('/:id/assign-manager', validateJwt, authorizeRole('admin'), assignManager);
+
 router.get('/:id', getRestaurantById);
 
 /**
@@ -151,7 +166,7 @@ router.get('/:id', getRestaurantById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -164,6 +179,15 @@ router.get('/:id', getRestaurantById);
  *               phone:
  *                 type: string
  *                 example: +57 1 600 0000
+ *               email:
+ *                 type: string
+ *                 example: actualizado@brasa33.com
+ *               description:
+ *                 type: string
+ *                 example: Descripción actualizada
+ *               logo:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Restaurante actualizado exitosamente
@@ -186,7 +210,7 @@ router.get('/:id', getRestaurantById);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', validateJwt, updateRestaurant);
+router.put('/:id', validateJwt, authorizeRole('admin'), upload.single('logo'), updateRestaurant);
 
 /**
  * @swagger
@@ -227,6 +251,6 @@ router.put('/:id', validateJwt, updateRestaurant);
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', validateJwt, deleteRestaurant);
+router.delete('/:id', validateJwt, authorizeRole('admin'), deleteRestaurant);
 
 export default router;

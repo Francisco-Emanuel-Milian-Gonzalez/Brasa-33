@@ -1,6 +1,7 @@
 import {
   createOrder as createOrderService,
   getOrders as getOrdersService,
+  getOrdersByRestaurant as getOrdersByRestaurantService,
   getMyOrders as getMyOrdersService,
   getOrderById as getOrderByIdService,
   confirmOrder as confirmOrderService,
@@ -11,10 +12,32 @@ import {
 export const createOrder = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { items } = req.body;
-    const order = await createOrderService(userId, items);
-
+    const {
+      items,
+      restaurant_id,
+      notes,
+      payment_method = 'cash',
+      card_last_four = null,
+    } = req.body;
+    const order = await createOrderService(
+      userId,
+      items,
+      restaurant_id,
+      notes,
+      payment_method,
+      card_last_four,
+    );
     res.status(201).json({ success: true, data: order });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrdersByRestaurant = async (req, res, next) => {
+  try {
+    const { restaurantId } = req.params;
+    const orders = await getOrdersByRestaurantService(restaurantId);
+    res.status(200).json({ success: true, data: orders });
   } catch (error) {
     next(error);
   }
@@ -77,8 +100,7 @@ export const updateOrderStatus = async (req, res, next) => {
 export const cancelOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const order = await cancelOrderService(id);
-
+    const order = await cancelOrderService(id, req.user.id, req.user.role);
     res.status(200).json({ success: true, data: order });
   } catch (error) {
     next(error);
