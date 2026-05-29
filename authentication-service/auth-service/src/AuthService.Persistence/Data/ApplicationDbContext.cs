@@ -79,6 +79,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
               .HasMaxLength(255);
             entity.Property(e => e.Status)
               .HasDefaultValue(false);
+            // Refresh token — nullable, máx 500 chars
+            entity.Property(e => e.RefreshToken)
+              .HasMaxLength(500)
+              .IsRequired(false);
+            entity.Property(e => e.RefreshTokenExpiry)
+              .IsRequired(false);
             entity.Property(e => e.CreatedAt)
               .IsRequired();
             entity.Property(e => e.UpdatedAt)

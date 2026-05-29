@@ -12,8 +12,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // Configurar DbContext con política de reintentos para conexión a PostgreSQL
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+            options.UseNpgsql(
+                configuration.GetConnectionString("DefaultConnection"),
+                npgsqlOptions => npgsqlOptions
+                    .EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: null))
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();

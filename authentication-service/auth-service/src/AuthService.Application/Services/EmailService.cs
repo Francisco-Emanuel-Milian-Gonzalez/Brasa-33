@@ -16,51 +16,66 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         var subject = "Verifica tu dirección de correo electrónico";
         var verificationUrl = $"{configuration["AppSettings:FrontendUrl"]}/verify-email?token={token}";
 
-        var body = $@"
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f8f8f8; border-radius: 8px;'>
-                
-                <div style='text-align: center; padding-bottom: 20px;'>
-                    <h2 style='color: #c20000;'>¡Bienvenido a Brasa 33, {username}! 🔥</h2>
+       var body = $@"
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 40px 30px; background-color: #16161a; border-radius: 12px; color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+
+                <div style='text-align: center; padding-bottom: 30px;'>
+                    <h2 style='color: #ffffff; font-size: 24px; font-weight: 600; margin: 0; letter-spacing: 0.5px;'>Verifica tu dirección de correo electrónico</h2>
+                    <p style='color: #71717a; font-size: 14px; margin-top: 8px;'>Brasa 33</p>
                 </div>
 
-                <p style='font-size: 16px; color: #333;'>
-                    Gracias por registrarte. Para activar tu cuenta y comenzar a disfrutar de nuestros servicios,
-                    necesitamos que confirmes tu dirección de correo electrónico.
+                <p style='font-size: 16px; color: #e4e4e7; line-height: 1.5; margin: 0 0 16px 0;'>
+                    Gracias por registrarte, <strong>{username}</strong>.
                 </p>
 
-                <div style='text-align: center; margin: 30px 0;'>
+                <p style='font-size: 15px; color: #a1a1aa; line-height: 1.6; margin: 0 0 32px 0;'>
+                    Para activar tu cuenta y acceder al panel de administración, es necesario que confirmes tu dirección de correo electrónico haciendo clic en el siguiente botón:
+                </p>
+
+                <div style='text-align: center; margin: 32px 0;'>
                     <a href='{verificationUrl}' 
-                    style='background-color: #c20000; color: #ffffff; padding: 12px 25px; 
-                            text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; display: inline-block;'>
+                       style='background-color: #a1a1aa; color: #16161a; padding: 14px 32px; 
+                              text-decoration: none; border-radius: 8px; font-size: 15px; font-weight: bold; display: inline-block; transition: background-color 0.2s;'>
                         Verificar mi correo
                     </a>
                 </div>
 
-                <p style='font-size: 14px; color: #555;'>
+                <p style='font-size: 14px; font-weight: 600; color: #e4e4e7; margin: 32px 0 8px 0;'>
+                    Token:
+                </p>
+
+                <div style='background-color: #242427; padding: 14px; border-radius: 8px; border: 1px solid #2e2e33; margin-bottom: 32px; text-align: center;'>
+                    <p style='word-break: break-all; font-size: 16px; font-weight: bold; color: #ffffff; margin: 0; font-family: monospace; letter-spacing: 1px;'>
+                        {token}
+                    </p>
+                </div>
+
+                <p style='font-size: 14px; color: #71717a; margin: 0 0 8px 0;'>
                     Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:
                 </p>
 
-                <p style='word-break: break-all; font-size: 13px; color: #777;'>
-                    {verificationUrl}
+                <div style='background-color: #242427; padding: 14px; border-radius: 8px; border: 1px solid #2e2e33; margin-bottom: 32px;'>
+                    <p style='word-break: break-all; font-size: 13px; color: #a1a1aa; margin: 0; font-family: monospace;'>
+                        {verificationUrl}
+                    </p>
+                </div>
+
+                <hr style='margin: 32px 0; border: none; border-top: 1px solid #2e2e33;' />
+
+                <p style='font-size: 13px; color: #71717a; line-height: 1.5; margin: 0 0 12px 0;'>
+                    Este enlace y token expirarán en 24 horas por razones de seguridad.
                 </p>
 
-                <hr style='margin: 25px 0; border: none; border-top: 1px solid #ddd;' />
-
-                <p style='font-size: 13px; color: #777;'>
-                    Este enlace expirará en 24 horas por razones de seguridad.
+                <p style='font-size: 13px; color: #71717a; line-height: 1.5; margin: 0 0 32px 0;'>
+                    Si no creaste una cuenta en Brasa 33, puedes ignorar este mensaje sin inconvenientes.
                 </p>
 
-                <p style='font-size: 13px; color: #777;'>
-                    Si no creaste una cuenta en Brasa 33, puedes ignorar este mensaje sin ningún problema.
-                </p>
-
-                <p style='font-size: 13px; color: #999; text-align: center; margin-top: 30px;'>
+                <p style='font-size: 12px; color: #52525b; text-align: center; margin: 0;'>
                     © {DateTime.Now.Year} Brasa 33. Todos los derechos reservados.
                 </p>
 
             </div>
             ";
-
         await SendEmailAsync(email, subject, body);
     }
 
@@ -69,55 +84,65 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         var subject = "Restablece tu contraseña";
         var resetUrl = $"{configuration["AppSettings:FrontendUrl"]}/reset-password?token={token}";
         var body = $@"
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f8f8f8; border-radius: 8px;'>
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 40px 30px; background-color: #16161a; border-radius: 12px; color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
 
-                <div style='text-align: center; padding-bottom: 20px;'>
-                    <h2 style='color: #c20000;'>Restablecimiento de Contraseña </h2>
+                <div style='text-align: center; padding-bottom: 30px;'>
+                    <h2 style='color: #ffffff; font-size: 24px; font-weight: 600; margin: 0; letter-spacing: 0.5px;'>Restablecimiento de Contraseña</h2>
+                    <p style='color: #71717a; font-size: 14px; margin-top: 8px;'>Brasa 33</p>
                 </div>
 
-                <p style='font-size: 16px; color: #333;'>
+                <p style='font-size: 16px; color: #e4e4e7; line-height: 1.5; margin: 0 0 16px 0;'>
                     Hola <strong>{username}</strong>,
                 </p>
 
-                <p style='font-size: 15px; color: #333;'>
-                    Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Brasa 33</strong>.
-                    Si fuiste tú, puedes crear una nueva contraseña haciendo clic en el siguiente botón:
+                <p style='font-size: 15px; color: #a1a1aa; line-height: 1.6; margin: 0 0 32px 0;'>
+                    Recibimos una solicitud para restablecer la contraseña de tu cuenta. Si fuiste tú, puedes establecer una nueva credencial haciendo clic en el siguiente botón:
                 </p>
 
-                <div style='text-align: center; margin: 30px 0;'>
+                <div style='text-align: center; margin: 32px 0;'>
                     <a href='{resetUrl}' 
-                    style='background-color: #c20000; color: #ffffff; padding: 12px 25px; 
-                            text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold; display: inline-block;'>
+                       style='background-color: #a1a1aa; color: #16161a; padding: 14px 32px; 
+                              text-decoration: none; border-radius: 8px; font-size: 15px; font-weight: bold; display: inline-block; transition: background-color 0.2s;'>
                         Restablecer mi contraseña
                     </a>
                 </div>
 
-                <p style='font-size: 14px; color: #555;'>
-                    Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:
+                <p style='font-size: 14px; font-weight: 600; color: #e4e4e7; margin: 32px 0 8px 0;'>
+                    Token:
                 </p>
 
-                <p style='word-break: break-all; font-size: 13px; color: #777;'>
-                    {resetUrl}
+                <div style='background-color: #242427; padding: 14px; border-radius: 8px; border: 1px solid #2e2e33; margin-bottom: 32px; text-align: center;'>
+                    <p style='word-break: break-all; font-size: 16px; font-weight: bold; color: #ffffff; margin: 0; font-family: monospace; letter-spacing: 1px;'>
+                        {token}
+                    </p>
+                </div>
+
+                <p style='font-size: 14px; color: #71717a; margin: 0 0 8px 0;'>
+                    Si el botón anterior no funciona, copia y pega el siguiente enlace en tu navegador:
                 </p>
 
-                <hr style='margin: 25px 0; border: none; border-top: 1px solid #ddd;' />
+                <div style='background-color: #242427; padding: 14px; border-radius: 8px; border: 1px solid #2e2e33; margin-bottom: 32px;'>
+                    <p style='word-break: break-all; font-size: 13px; color: #a1a1aa; margin: 0; font-family: monospace;'>
+                        {resetUrl}
+                    </p>
+                </div>
 
-                <p style='font-size: 13px; color: #777;'>
-                     !!Este enlace expirará en 1 hora por motivos de seguridad!!
+                <hr style='margin: 32px 0; border: none; border-top: 1px solid #2e2e33;' />
+
+                <p style='font-size: 13px; color: #71717a; line-height: 1.5; margin: 0 0 12px 0;'>
+                    Este enlace y token expirarán en 1 hora por motivos de seguridad.
                 </p>
 
-                <p style='font-size: 13px; color: #777;'>
-                    Si no solicitaste este cambio, puedes ignorar este mensaje. 
-                    Tu contraseña actual permanecerá segura y sin modificaciones.
+                <p style='font-size: 13px; color: #71717a; line-height: 1.5; margin: 0 0 32px 0;'>
+                    Si no solicitaste este cambio, puedes ignorar este mensaje. Tu contraseña actual permanecerá segura y sin modificaciones.
                 </p>
 
-                <p style='font-size: 13px; color: #999; text-align: center; margin-top: 30px;'>
+                <p style='font-size: 12px; color: #52525b; text-align: center; margin: 0;'>
                     © {DateTime.Now.Year} Brasa 33. Todos los derechos reservados.
                 </p>
 
             </div>
             ";
-
         await SendEmailAsync(email, subject, body);
     }
 
@@ -126,42 +151,47 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
         var subject = "¡Bienvenido a BRASA 33!";
 
         var body = $@"
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; background-color: #f8f8f8; border-radius: 8px;'>
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 40px 30px; background-color: #16161a; border-radius: 12px; color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
 
-                <div style='text-align: center; padding-bottom: 20px;'>
-                    <h2 style='color: #c20000;'>¡Bienvenido a Brasa 33, {username}! </h2>
+                <div style='text-align: center; padding-bottom: 30px;'>
+                    <h2 style='color: #ffffff; font-size: 24px; font-weight: 600; margin: 0; letter-spacing: 0.5px;'>¡Bienvenido a Brasa 33, {username}!</h2>
+                    <p style='color: #71717a; font-size: 14px; margin-top: 8px;'>Registro Completado</p>
                 </div>
 
-                <p style='font-size: 16px; color: #333;'>
+                <p style='font-size: 16px; color: #e4e4e7; line-height: 1.5; margin: 0 0 16px 0;'>
                     ¡Excelente noticia! Tu cuenta ha sido <strong>verificada y activada correctamente</strong>.
                 </p>
 
-                <p style='font-size: 15px; color: #333;'>
-                    Ahora puedes acceder a todas las funciones de nuestra plataforma y disfrutar de la experiencia completa que Brasa 33 tiene para ti.
+                <p style='font-size: 15px; color: #a1a1aa; line-height: 1.6; margin: 0 0 24px 0;'>
+                    Ahora puedes acceder a todas las funciones de nuestra plataforma y disfrutar de la experiencia completa que el panel de administración tiene para ti.
                 </p>
 
-                <div style='background-color: #ffffff; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #c20000;'>
-                    <p style='margin: 0; font-size: 14px; color: #555;'>
-                        Si tienes alguna duda o necesitas ayuda, nuestro equipo de soporte está listo para asistirte.
+                <div style='background-color: #242427; padding: 20px; border-radius: 8px; border: 1px solid #2e2e33; margin: 32px 0;'>
+                    <p style='margin: 0 0 8px 0; font-size: 14px; color: #e4e4e7; font-weight: 600;'>
+                        ¿Necesitas ayuda?
                     </p>
-                    <p style='margin: 5px 0 0 0; font-size: 14px;'>
-                        <a href='mailto:la33code@gmail.com' style='color: #c20000; text-decoration: none;'>
+                    <p style='margin: 0 12px 0 0; font-size: 14px; color: #a1a1aa; line-height: 1.5;'>
+                        Si tienes alguna duda o necesitas asistencia técnica, nuestro equipo de soporte está listo para ayudarte en:
+                    </p>
+                    <p style='margin: 12px 0 0 0; font-size: 14px; font-weight: bold;'>
+                        <a href='mailto:la33code@gmail.com' style='color: #ffffff; text-decoration: underline;'>
                             la33code@gmail.com
                         </a>
                     </p>
                 </div>
 
-                <p style='font-size: 15px; color: #333;'>
-                    Gracias por confiar en nosotros y ser parte de la comunidad Brasa 33.
+                <p style='font-size: 15px; color: #a1a1aa; line-height: 1.6; margin: 0 0 32px 0;'>
+                    Gracias por confiar en nuestro sistema y formar parte de la plataforma.
                 </p>
 
-                <p style='font-size: 13px; color: #999; text-align: center; margin-top: 30px;'>
+                <hr style='margin: 32px 0; border: none; border-top: 1px solid #2e2e33;' />
+
+                <p style='font-size: 12px; color: #52525b; text-align: center; margin: 0;'>
                     © {DateTime.Now.Year} Brasa 33. Todos los derechos reservados.
                 </p>
 
             </div>
             ";
-
         await SendEmailAsync(email, subject, body);
     }
 

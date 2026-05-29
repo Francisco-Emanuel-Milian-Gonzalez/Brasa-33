@@ -3987,19 +3987,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\useri\\.nuget\\packages\\": {}
+    "C:\\Users\\elips\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\useri\\OneDrive\\Documents\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "projectUniqueName": "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
       "projectName": "AuthService.Application",
-      "projectPath": "C:\\Users\\useri\\OneDrive\\Documents\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
-      "packagesPath": "C:\\Users\\useri\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\useri\\OneDrive\\Documents\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Application\\obj\\",
+      "projectPath": "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+      "packagesPath": "C:\\Users\\elips\\.nuget\\packages\\",
+      "outputPath": "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Application\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\useri\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\elips\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4011,8 +4011,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\useri\\OneDrive\\Documents\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
-              "projectPath": "C:\\Users\\useri\\OneDrive\\Documents\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
+            "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj": {
+              "projectPath": "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj"
             }
           }
         }
@@ -4081,7 +4081,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.420/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

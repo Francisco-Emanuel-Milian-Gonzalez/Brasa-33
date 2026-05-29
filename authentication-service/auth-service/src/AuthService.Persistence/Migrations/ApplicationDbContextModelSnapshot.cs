@@ -80,6 +80,15 @@ namespace AuthService.Persistence.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("password");
 
+                    b.Property<string>("RefreshToken")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<DateTime?>("RefreshTokenExpiry")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_token_expiry");
+
                     b.Property<bool>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")

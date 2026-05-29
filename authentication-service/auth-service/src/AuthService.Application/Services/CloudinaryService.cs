@@ -10,9 +10,13 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
 {
     private readonly Cloudinary _cloudinary = new(
         new Account(
-            configuration["CloudinarySettings:Cloudname"],
-            configuration["CloudinarySettings:ApiKey"],
+            configuration["CloudinarySettings:CloudName"]
+                ?? configuration["CloudinarySettings:Cloudname"]
+                ?? throw new InvalidOperationException("Cloudinary CloudName no configurado"),
+            configuration["CloudinarySettings:ApiKey"]
+                ?? throw new InvalidOperationException("Cloudinary ApiKey no configurado"),
             configuration["CloudinarySettings:ApiSecret"]
+                ?? throw new InvalidOperationException("Cloudinary ApiSecret no configurado")
         )
     );
 
@@ -34,18 +38,38 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
     {
         var defaultPath =
             configuration["CloudinarySettings:DefaultAvatarPath"]
-            ?? "avatarDefault-1749508519496.png";
-        if (defaultPath.Contains('/'))
-            return defaultPath.Split('/').Last();
-        return defaultPath;
+            ?? "DefaultAvatar_lunlmo.webp";
+        return BuildDeliveryUrl(defaultPath);
+    }
+
+    private string BuildDeliveryUrl(string path)
+    {
+        var cloudName =
+            configuration["CloudinarySettings:CloudName"]
+            ?? configuration["CloudinarySettings:Cloudname"]
+            ?? "dcroiajue";
+        var baseUrl =
+            configuration["CloudinarySettings:BaseUrl"]
+            ?? $"https://res.cloudinary.com/{cloudName}/image/upload/";
+        var folder = (configuration["CloudinarySettings:Folder"] ?? "auth-b33-in6av/profiles").Trim();
+
+        var pathToUse = path;
+        if (!pathToUse.Contains('/'))
+            pathToUse = $"{folder}/{pathToUse}";
+
+        return $"{baseUrl}{pathToUse}";
     }
 
     public string GetFullImageUrl(string imagePath)
     {
+        var cloudName =
+            configuration["CloudinarySettings:CloudName"]
+            ?? configuration["CloudinarySettings:Cloudname"]
+            ?? "dcroiajue";
         var baseUrl =
             configuration["CloudinarySettings:BaseUrl"]
-            ?? "https://res.cloudinary.com/dwjn1tpta/image/upload/v1769726009/";
-        var folder = configuration["CloudianrySettings:Folder"] ?? " auth_brasa33_in6av/profiles";
+            ?? $"https://res.cloudinary.com/{cloudName}/image/upload/";
+        var folder = (configuration["CloudinarySettings:Folder"] ?? "auth_brasa33_in6av/profiles").Trim();
         var defaultPath =
             configuration["CloudinarySettings:DefaultPath"] ?? "brasa_33.png";
 
@@ -61,7 +85,7 @@ public class CloudinaryService(IConfiguration configuration) : ICloudinaryServic
         try
         {
             using var stream = new MemoryStream(imageFile.Data);
-            var folder = configuration["CloudinarySettings:Folder"] ?? " auth_brasa33_in6av/profiles";
+            var folder = (configuration["CloudinarySettings:Folder"] ?? "auth_brasa33_in6av/profiles").Trim();
 
             var uploadParams = new ImageUploadParams
             {

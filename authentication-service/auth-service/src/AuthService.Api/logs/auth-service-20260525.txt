@@ -1,0 +1,73 @@
+[2026-05-25 09:11:48 INF] Iniciando migración de base de datos... {"SourceContext":"Program"}
+[2026-05-25 09:11:49 INF] Migración de base de datos completada exitosamente. {"SourceContext":"Program"}
+[2026-05-25 09:11:49 INF] Verificando conexión a la base de datos y aplicando migraciones pendientes... {"SourceContext":"Program"}
+[2026-05-25 09:11:50 INF] Migraciones aplicadas. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-05-25 09:11:51 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-05-25 09:11:51 INF] API de AuthService está ejecutándose en http://localhost:5218. Endpoint de salud: http://localhost:5218/health {"SourceContext":"Program"}
+[2026-05-25 09:15:33 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNLQE1RI3RNT:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:15:33 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 12.6996 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQE1RI3RNT:00000001","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:15:34 WRN] Failed login attempt {"EventId":{"Id":1003,"Name":"LogFailedLoginAttempt"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"002b96a1-6f79-4053-9199-8e5bd88af0a6","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:15:34 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLQE1RI3RNT:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQE1RI3RNT"}
+System.UnauthorizedAccessException: Credenciales inválidas
+   at AuthService.Application.Services.AuthService.LoginAsync(LoginDto loginDto) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 166
+   at AuthService.Api.Controllers.AuthController.Login(LoginDto loginDto) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 63
+   at lambda_method30(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-25 09:15:34 INF] HTTP POST /api/v1/auth/login responded 401 in 1245.9440 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQE1RI3RNT:00000002","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:24 INF] User elipsisworld registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:24 INF] HTTP POST /api/v1/auth/register responded 201 in 1768.6688 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQE1RI3RNT:00000003","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:25 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:27 INF] Email enviado exitosamente {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:27 INF] Pipeline de email completado {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:27 INF] Email processed {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:27 INF] Verification email sent to neverente@gmail.com {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"c1a62344-24ac-49ed-9510-ef1d12598d7d","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000003","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:35 WRN] Failed login attempt {"EventId":{"Id":1003,"Name":"LogFailedLoginAttempt"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"002b96a1-6f79-4053-9199-8e5bd88af0a6","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLQE1RI3RNT:00000004","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:16:35 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNLQE1RI3RNT:00000004","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQE1RI3RNT"}
+System.UnauthorizedAccessException: La cuenta no está activa. Verifica tu correo electrónico.
+   at AuthService.Application.Services.AuthService.LoginAsync(LoginDto loginDto) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 172
+   at AuthService.Api.Controllers.AuthController.Login(LoginDto loginDto) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 63
+   at lambda_method30(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\trabajos\Brasa-33-main\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-05-25 09:16:35 INF] HTTP POST /api/v1/auth/login responded 401 in 141.0713 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQE1RI3RNT:00000004","ConnectionId":"0HNLQE1RI3RNT"}
+[2026-05-25 09:28:44 INF] Iniciando migración de base de datos... {"SourceContext":"Program"}
+[2026-05-25 09:28:47 INF] Migración de base de datos completada exitosamente. {"SourceContext":"Program"}
+[2026-05-25 09:28:48 INF] Verificando conexión a la base de datos y aplicando migraciones pendientes... {"SourceContext":"Program"}
+[2026-05-25 09:28:48 INF] Migraciones aplicadas. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-05-25 09:28:48 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-05-25 09:28:48 INF] API de AuthService está ejecutándose en http://localhost:5218. Endpoint de salud: http://localhost:5218/health {"SourceContext":"Program"}
+[2026-05-25 23:27:17 INF] Iniciando migración de base de datos... {"SourceContext":"Program"}
+[2026-05-25 23:27:18 ERR] Failed executing DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT migration_id, product_version
+FROM "__EFMigrationsHistory"
+ORDER BY migration_id; {"EventId":{"Id":20102,"Name":"Microsoft.EntityFrameworkCore.Database.Command.CommandError"},"SourceContext":"Microsoft.EntityFrameworkCore.Database.Command"}
+[2026-05-25 23:27:18 INF] Migración de base de datos completada exitosamente. {"SourceContext":"Program"}
+[2026-05-25 23:27:18 INF] Verificando conexión a la base de datos y aplicando migraciones pendientes... {"SourceContext":"Program"}
+[2026-05-25 23:27:19 INF] Migraciones aplicadas. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-05-25 23:27:19 INF] Roles sembrados: ADMIN_ROLE, MANAGER_ROLE, CLIENT_ROLE {"SourceContext":"Program"}
+[2026-05-25 23:27:20 INF] Usuario administrador por defecto creado: admin / admin@labrasa33.com {"SourceContext":"Program"}
+[2026-05-25 23:27:20 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-05-25 23:27:20 INF] API de AuthService está ejecutándose en http://localhost:5218. Endpoint de salud: http://localhost:5218/health {"SourceContext":"Program"}

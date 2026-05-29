@@ -8,65 +8,51 @@ namespace AuthService.Persistence.Repositories;
 
 public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
+    // ── Includes reutilizables ────────────────────────────────────────────
+    private IQueryable<User> WithAllIncludes() =>
+        context.Users
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserEmail)
+            .Include(u => u.UserPasswordReset)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role);
+
+    // ── CRUD ──────────────────────────────────────────────────────────────
     public async Task<User> GetByIdAsync(string id)
     {
-        var user = await context.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserEmail)
-            .Include(u => u.UserPasswordReset)
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
+        var user = await WithAllIncludes()
             .FirstOrDefaultAsync(u => u.Id == id);
-        return user ?? throw new InvalidOperationException($"User with id {id} not found.");
+
+        return user ?? throw new InvalidOperationException($"User with id '{id}' not found.");
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
-    {
-        return await context.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserEmail)
-            .Include(u => u.UserPasswordReset)
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
+    public async Task<User?> GetByEmailAsync(string email) =>
+        await WithAllIncludes()
             .FirstOrDefaultAsync(u => EF.Functions.ILike(u.Email, email));
-    }
 
-    public async Task<User?> GetByUsernameAsync(string username)
-    {
-        return await context.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserEmail)
-            .Include(u => u.UserPasswordReset)
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
+    public async Task<User?> GetByUsernameAsync(string username) =>
+        await WithAllIncludes()
             .FirstOrDefaultAsync(u => EF.Functions.ILike(u.UserName, username));
-    }
 
-    public async Task<User?> GetByEmailVerificartionTokenAsync(string token)
-    {
-        return await context.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserEmail)
-            .Include(u => u.UserPasswordReset)
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.UserEmail != null &&
-                                    u.UserEmail.EmailVerificationToken == token &&
-                                    u.UserEmail.EmailVerificationTokenExpiry > DateTime.UtcNow);
-    }
+    public async Task<User?> GetByEmailVerificartionTokenAsync(string token) =>
+        await WithAllIncludes()
+            .FirstOrDefaultAsync(u =>
+                u.UserEmail != null
+                && u.UserEmail.EmailVerificationToken == token
+                && u.UserEmail.EmailVerificationTokenExpiry > DateTime.UtcNow);
 
-    public async Task<User?> GetByPasswordResetTokenAsync(string token)
-    {
-        return await context.Users
-            .Include(u => u.UserProfile)
-            .Include(u => u.UserEmail)
-            .Include(u => u.UserPasswordReset)
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.UserPasswordReset != null &&
-                                    u.UserPasswordReset.PasswordResetToken == token &&
-                                    u.UserPasswordReset.PasswordResetTokenExpiry > DateTime.UtcNow);
-    }
+    public async Task<User?> GetByPasswordResetTokenAsync(string token) =>
+        await WithAllIncludes()
+            .FirstOrDefaultAsync(u =>
+                u.UserPasswordReset != null
+                && u.UserPasswordReset.PasswordResetToken == token
+                && u.UserPasswordReset.PasswordResetTokenExpiry > DateTime.UtcNow);
+
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken) =>
+        await WithAllIncludes()
+            .FirstOrDefaultAsync(u =>
+                u.RefreshToken == refreshToken
+                && u.RefreshTokenExpiry > DateTime.UtcNow);
 
     public async Task<User> CreateUserAsync(User user)
     {
@@ -77,7 +63,6 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
     public async Task<User> UpdateUserAsync(User user)
     {
-        // Entity is already tracked from GetByIdAsync, just save changes
         await context.SaveChangesAsync();
         return await GetByIdAsync(user.Id);
     }
@@ -90,39 +75,36 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return true;
     }
 
-    public async Task<bool> ExistsByEmailAsync(string email)
-    {
-        return await context.Users
-            .AnyAsync(u => EF.Functions.ILike(u.Email, email));
-    }
+    public async Task<IReadOnlyList<User>> GetAllAsync() =>
+        await WithAllIncludes()
+            .OrderByDescending(u => u.CreatedAt)
+            .ToListAsync();
 
-    public async Task<bool> ExistsByUsernameAsync(string username)
-    {
-        return await context.Users
-            .AnyAsync(u => EF.Functions.ILike(u.UserName, username));
-    }
+    // ── Existence checks ──────────────────────────────────────────────────
+    public async Task<bool> ExistsByEmailAsync(string email) =>
+        await context.Users.AnyAsync(u => EF.Functions.ILike(u.Email, email));
 
+    public async Task<bool> ExistsByUsernameAsync(string username) =>
+        await context.Users.AnyAsync(u => EF.Functions.ILike(u.UserName, username));
+
+    // ── Role management ───────────────────────────────────────────────────
     public async Task UpdateUserRolesAsync(string userId, string roleId)
     {
-        // Remove existing user-role associations
-        var existingRoles = await context.UserRoles
+        var existing = await context.UserRoles
             .Where(ur => ur.UserId == userId)
             .ToListAsync();
-        
-        context.UserRoles.RemoveRange(existingRoles);
 
-        // Add new user-role association with the existing role
-        var newUserRole = new UserRole
+        context.UserRoles.RemoveRange(existing);
+
+        context.UserRoles.Add(new UserRole
         {
-            Id = UuidGenerator.GenerateUserId(), // Generate ID for the UserRole entry (not the Role)
-            UserId = userId,
-            RoleId = roleId, // Use the existing role ID from the roles table
+            Id        = UuidGenerator.GenerateUserId(),
+            UserId    = userId,
+            RoleId    = roleId,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-        
-        context.UserRoles.Add(newUserRole);
+            UpdatedAt = DateTime.UtcNow,
+        });
+
         await context.SaveChangesAsync();
     }
-
 }

@@ -1,0 +1,47 @@
+[2026-05-24 22:20:01 INF] Iniciando migración de base de datos... {"SourceContext":"Program"}
+[2026-05-24 22:20:02 INF] Migración de base de datos completada exitosamente. {"SourceContext":"Program"}
+[2026-05-24 22:20:02 INF] Verificando conexión a la base de datos y aplicando migraciones pendientes... {"SourceContext":"Program"}
+[2026-05-24 22:20:02 INF] Migraciones aplicadas. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-05-24 22:20:03 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-05-24 22:20:03 ERR] Hosting failed to start {"EventId":{"Id":11,"Name":"HostedServiceStartupFaulted"},"SourceContext":"Microsoft.Extensions.Hosting.Internal.Host"}
+System.IO.IOException: Failed to bind to address http://127.0.0.1:5218: address already in use.
+ ---> Microsoft.AspNetCore.Connections.AddressInUseException: Solo se permite un uso de cada dirección de socket (protocolo/dirección de red/puerto)
+ ---> System.Net.Sockets.SocketException (10048): Solo se permite un uso de cada dirección de socket (protocolo/dirección de red/puerto)
+   at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+   at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportOptions.CreateDefaultBoundListenSocket(EndPoint endpoint)
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketConnectionListener.Bind()
+   at Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.SocketTransportFactory.BindAsync(EndPoint endpoint, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Infrastructure.TransportManager.BindAsync(EndPoint endPoint, ConnectionDelegate connectionDelegate, EndpointConfig endpointConfig, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.<>c__DisplayClass28_0`1.<<StartAsync>g__OnBind|0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindEndpointAsync(ListenOptions endpoint, AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.LocalhostListenOptions.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.AddressesStrategy.BindAsync(AddressBindContext context, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.AddressBinder.BindAsync(ListenOptions[] listenOptions, AddressBindContext context, Func`2 useHttps, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+[2026-05-24 22:21:34 INF] Iniciando migración de base de datos... {"SourceContext":"Program"}
+[2026-05-24 22:21:35 INF] Migración de base de datos completada exitosamente. {"SourceContext":"Program"}
+[2026-05-24 22:21:35 INF] Verificando conexión a la base de datos y aplicando migraciones pendientes... {"SourceContext":"Program"}
+[2026-05-24 22:21:35 INF] Migraciones aplicadas. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-05-24 22:21:36 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-05-24 22:21:36 INF] API de AuthService está ejecutándose en http://localhost:5218. Endpoint de salud: http://localhost:5218/health {"SourceContext":"Program"}
+[2026-05-24 22:21:48 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNLQ2KHIPSLL:00000001","RequestPath":"/","ConnectionId":"0HNLQ2KHIPSLL"}
+[2026-05-24 22:21:48 INF] HTTP GET / responded 404 in 49.4493 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLL:00000001","ConnectionId":"0HNLQ2KHIPSLL"}
+[2026-05-24 22:21:48 INF] HTTP GET /favicon.ico responded 404 in 1.9783 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLL:00000002","ConnectionId":"0HNLQ2KHIPSLL"}
+[2026-05-24 22:21:58 INF] HTTP GET /health responded 200 in 144.8876 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLL:00000003","ConnectionId":"0HNLQ2KHIPSLL"}
+[2026-05-24 22:21:58 INF] HTTP GET /favicon.ico responded 404 in 0.9340 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLL:00000004","ConnectionId":"0HNLQ2KHIPSLL"}
+[2026-05-24 22:23:01 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 3.5450 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLM:00000001","ConnectionId":"0HNLQ2KHIPSLM"}
+[2026-05-24 22:23:02 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"64fb0a70-f46e-4428-aeb9-5787984795d3","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNLQ2KHIPSLM:00000002","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNLQ2KHIPSLM"}
+[2026-05-24 22:23:02 INF] HTTP POST /api/v1/auth/login responded 200 in 1611.2129 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLM:00000002","ConnectionId":"0HNLQ2KHIPSLM"}
+[2026-05-24 22:23:13 INF] HTTP OPTIONS /api/v1/users responded 204 in 0.2968 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLM:00000003","ConnectionId":"0HNLQ2KHIPSLM"}
+[2026-05-24 22:23:14 INF] HTTP GET /api/v1/users responded 200 in 261.2526 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNLQ2KHIPSLM:00000004","ConnectionId":"0HNLQ2KHIPSLM"}
