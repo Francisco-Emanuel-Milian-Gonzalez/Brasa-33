@@ -1,7 +1,12 @@
 namespace AuthService.Domain.Enums;
 
-public enum UserRole
+/// <summary>
+/// Enumeración de roles del sistema.
+/// Usar RoleConstants para los valores en string exactos de JWT y base de datos.
+/// </summary>
+public enum UserRoleEnum
 {
-    USER_ROLE,
-    ADMIN_ROLE
+    CLIENT_ROLE,
+    MANAGER_ROLE,
+    ADMIN_ROLE,
 }

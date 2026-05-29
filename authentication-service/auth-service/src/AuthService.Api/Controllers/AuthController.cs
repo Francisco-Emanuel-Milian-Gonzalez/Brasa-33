@@ -1,4 +1,3 @@
-using System;
 using AuthService.Application.DTOs;
 using AuthService.Application.DTOs.Email;
 using AuthService.Application.Interfaces;
@@ -12,61 +11,43 @@ namespace AuthService.Api.Controllers;
 [Route("api/v1/[controller]")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
+    // ── Profile ────────────────────────────────────────────────────────────
     [HttpGet("profile")]
     [Authorize]
     public async Task<ActionResult<object>> GetProfile()
     {
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
-        if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
-        {
-            return Unauthorized();
-        }
+        var userId = User.Claims
+            .FirstOrDefault(c => c.Type == "sub"
+                || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")
+            ?.Value;
 
-        var user = await authService.GetUserByIdAsync(userIdClaim.Value);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var user = await authService.GetUserByIdAsync(userId);
         if (user == null)
-        {
             return NotFound();
-        }
-        return Ok(new
-        {
-            success = true,
-            message = "Perfil obtenido exitosamente",
-            data = user
-        });
+
+        return Ok(new { success = true, message = "Perfil obtenido", data = user });
     }
 
     [HttpPost("profile/by-id")]
     [EnableRateLimiting("ApiPolicy")]
     public async Task<ActionResult<object>> GetProfileById([FromBody] GetProfileByIdDto request)
     {
-        if (string.IsNullOrEmpty(request.UserId))
-        {
-            return BadRequest(new
-            {
-                success = false,
-                message = "El user Id es requerido"
-            });
-        }
+        if (string.IsNullOrWhiteSpace(request.UserId))
+            return BadRequest(new { success = false, message = "El userId es requerido" });
 
         var user = await authService.GetUserByIdAsync(request.UserId);
         if (user == null)
-        {
-            return NotFound(new
-            {
-                success = false,
-                message = "Usuario no encontrado"
-            });
-        }
+            return NotFound(new { success = false, message = "Usuario no encontrado" });
 
-        return Ok(new
-        {
-            success = true,
-            message = "Perfil obtenido exitosamente",
-            data = user
-        });
+        return Ok(new { success = true, message = "Perfil obtenido", data = user });
     }
+
+    // ── Register ────────────────────────────────────────────────────────────
     [HttpPost("register")]
-    [RequestSizeLimit(10 * 1024 * 1024)] // 10MB límite
+    [RequestSizeLimit(10 * 1024 * 1024)]
     [EnableRateLimiting("AuthPolicy")]
     public async Task<ActionResult<RegisterResponseDto>> Register([FromForm] RegisterDto registerDto)
     {
@@ -74,6 +55,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         return StatusCode(201, result);
     }
 
+    // ── Login ───────────────────────────────────────────────────────────────
     [HttpPost("login")]
     [EnableRateLimiting("AuthPolicy")]
     public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
@@ -82,6 +64,23 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(result);
     }
 
+    // ── Refresh token ───────────────────────────────────────────────────────
+    /// <summary>
+    /// Renueva el JWT de acceso usando un refresh token válido.
+    /// El refresh token anterior se invalida (rotación de tokens).
+    /// </summary>
+    [HttpPost("refresh")]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<AuthResponseDto>> Refresh([FromBody] RefreshTokenDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new { success = false, message = "Refresh token requerido" });
+
+        var result = await authService.RefreshTokenAsync(dto.RefreshToken);
+        return Ok(result);
+    }
+
+    // ── Email verification ──────────────────────────────────────────────────
     [HttpPost("verify-email")]
     [EnableRateLimiting("ApiPolicy")]
     public async Task<ActionResult<EmailResponseDto>> VerifyEmail([FromBody] VerifyEmailDto verifyEmailDto)
@@ -99,32 +98,23 @@ public class AuthController(IAuthService authService) : ControllerBase
         if (!result.Success)
         {
             if (result.Message.Contains("no encontrado", StringComparison.OrdinalIgnoreCase))
-            {
                 return NotFound(result);
-            }
-            if (result.Message.Contains("ya ha sido verificado", StringComparison.OrdinalIgnoreCase) ||
-                result.Message.Contains("ya verificado", StringComparison.OrdinalIgnoreCase))
-            {
+            if (result.Message.Contains("verificado", StringComparison.OrdinalIgnoreCase))
                 return BadRequest(result);
-            }
-
             return StatusCode(503, result);
         }
 
         return Ok(result);
     }
 
+    // ── Password recovery ───────────────────────────────────────────────────
     [HttpPost("forgot-password")]
     [EnableRateLimiting("AuthPolicy")]
     public async Task<ActionResult<EmailResponseDto>> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
     {
         var result = await authService.ForgotPasswordAsync(forgotPasswordDto);
-
         if (!result.Success)
-        {
             return StatusCode(503, result);
-        }
-
         return Ok(result);
     }
 

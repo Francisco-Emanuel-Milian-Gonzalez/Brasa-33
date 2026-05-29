@@ -8,6 +8,26 @@ namespace AuthService.Application.Services;
 
 public class UserManagementService(IUserRepository users, IRoleRepository roles, ICloudinaryService cloudinary) : IUserManagementService
 {
+    public async Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync()
+    {
+        var allUsers = await users.GetAllAsync();
+        return allUsers.Select(u => MapToDto(u)).ToList();
+    }
+
+    public async Task<bool> DeleteUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var adminCount = await roles.CountUsersInRoleAsync(RoleConstants.ADMIN_ROLE);
+        var user = await users.GetByIdAsync(userId);
+        var isAdmin = user.UserRoles.Any(r => r.Role.Name == RoleConstants.ADMIN_ROLE);
+
+        if (isAdmin && adminCount <= 1)
+            throw new InvalidOperationException("Cannot delete the last administrator");
+
+        return await users.DeleteUserAsync(userId);
+    }
+
     public async Task<UserResponseDto> UpdateUserRoleAsync(string userId, string roleName)
     {
         // Normalize
@@ -16,7 +36,8 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
         // Validate inputs
         if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
         if (!RoleConstants.AllowedRoles.Contains(roleName))
-            throw new InvalidOperationException($"Role not allowed. Use {RoleConstants.ADMIN_ROLE} or {RoleConstants.USER_ROLE}");
+            throw new InvalidOperationException(
+                $"Role not allowed. Valid roles: {string.Join(", ", RoleConstants.AllowedRoles)}");
 
         // Load user with roles
         var user = await users.GetByIdAsync(userId);
@@ -42,23 +63,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
 
         // Reload user with updated roles
         user = await users.GetByIdAsync(userId);
-
-        // Map to response
-        return new UserResponseDto
-        {
-            Id = user.Id,
-            Name = user.Name,
-            Surname = user.SurName,
-            Username = user.UserName,
-            Email = user.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
-            Phone = user.UserProfile?.Phone ?? string.Empty,
-            Role = role.Name,
-            Status = user.Status,
-            IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
-            CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt
-        };
+        return MapToDto(user);
     }
 
     public async Task<IReadOnlyList<string>> GetUserRolesAsync(string userId)
@@ -71,20 +76,27 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
     {
         roleName = roleName?.Trim().ToUpperInvariant() ?? string.Empty;
         var usersInRole = await roles.GetUsersByRoleAsync(roleName);
-        return usersInRole.Select(u => new UserResponseDto
+        return usersInRole.Select(u => MapToDto(u)).ToList();
+    }
+
+    // ── Private mapper ────────────────────────────────────────────────────
+    private UserResponseDto MapToDto(User u)
+    {
+        var roleName = u.UserRoles.FirstOrDefault()?.Role?.Name ?? string.Empty;
+        return new UserResponseDto
         {
-            Id = u.Id,
-            Name = u.Name,
-            Surname = u.SurName,
-            Username = u.UserName,
-            Email = u.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePicture ?? string.Empty),
-            Phone = u.UserProfile?.Phone ?? string.Empty,
-            Role = roleName,
-            Status = u.Status,
-            IsEmailVerified = u.UserEmail?.EmailVerified ?? false,
-            CreatedAt = u.CreatedAt,
-            UpdatedAt = u.UpdatedAt
-        }).ToList();
+            Id               = u.Id,
+            Name             = u.Name,
+            Surname          = u.SurName,
+            Username         = u.UserName,
+            Email            = u.Email,
+            ProfilePicture   = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePicture ?? string.Empty),
+            Phone            = u.UserProfile?.Phone ?? string.Empty,
+            Role             = roleName,
+            Status           = u.Status,
+            IsEmailVerified  = u.UserEmail?.EmailVerified ?? false,
+            CreatedAt        = u.CreatedAt,
+            UpdatedAt        = u.UpdatedAt
+        };
     }
 }

@@ -4,6 +4,7 @@ using AuthService.Api.ModelBinders;
 using AuthService.Persistence.Data;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.EntityFrameworkCore;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 
@@ -49,6 +50,25 @@ builder.Services.AddSecurityPolicies(builder.Configuration);
 builder.Services.AddSecurityOptions();
 
 var app = builder.Build();
+
+// Ejecutar migraciones de Entity Framework automáticamente al iniciar
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        
+        logger.LogInformation("Iniciando migración de base de datos...");
+        dbContext.Database.Migrate();
+        logger.LogInformation("Migración de base de datos completada exitosamente.");
+    }
+}
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Error durante la migración de base de datos. La aplicación intentará conectarse de todas formas.");
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -157,24 +177,27 @@ app.Lifetime.ApplicationStarted.Register(() =>
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var logger  = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
     try
     {
-        logger.LogInformation("Verificando conexión a la base de datos...");
+        logger.LogInformation("Verificando conexión a la base de datos y aplicando migraciones pendientes...");
 
-        // Garantizar que la base de datos se crea (similar a Sequelize sync en Node.js)
-        await context.Database.EnsureCreatedAsync();
+        // Usar Migrate() en lugar de EnsureCreatedAsync() para que las migraciones
+        // de EF Core se apliquen correctamente en todos los entornos.
+        // Si la BD no existe, la crea y aplica todas las migraciones.
+        // Si ya existe, aplica sólo las migraciones pendientes.
+        await context.Database.MigrateAsync();
 
-        logger.LogInformation("Base de datos lista. Ejecutando datos semilla...");
-        await DataSeeder.SeendAsync(context);
+        logger.LogInformation("Migraciones aplicadas. Ejecutando datos semilla...");
+        await DataSeeder.SeendAsync(context, logger);
 
         logger.LogInformation("Inicialización de base de datos completada exitosamente");
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "Ocurrió un error al inicializar la base de datos");
-        throw; // Relanzar para detener la aplicación
+        throw;
     }
 }
 
