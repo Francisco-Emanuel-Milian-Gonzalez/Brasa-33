@@ -1,16 +1,58 @@
-# React + Vite
+﻿# Cliente Brasa33
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interfaz web del sistema Brasa 33, construida con React y Vite. Permite autenticarse, consultar restaurantes, ver menús, realizar pedidos, administrar reservaciones y acceder a funciones administrativas.
 
-Currently, two official plugins are available:
+## Stack
+- React 19
+- Vite
+- Tailwind CSS
+- Zustand
+- Axios
+- React Router
+- Recharts
+- jsPDF / xlsx
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Requisitos
+- Node.js 18+
+- pnpm (recomendado) o npm
+- `authentication-service` y `restaurant-manager` en ejecución
 
-## React Compiler
+## Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+cd cliente-labrasa33
+pnpm install
+```
 
-## Expanding the ESLint configuration
+## Variables de entorno
+El frontend utiliza variables de entorno Vite para apuntar a los servicios de Auth y API.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Crea un archivo `.env` con:
+
+```env
+VITE_AUTH_URL=http://localhost:5000
+VITE_ADMIN_URL=http://localhost:3000/brasa33/v1
+```
+
+## Ejecución en desarrollo
+
+```bash
+pnpm dev
+```
+
+Esto inicia la aplicación en modo desarrollo con recarga en caliente.
+
+## Build de producción
+
+```bash
+pnpm build
+pnpm preview
+```
+
+## Notas
+- El cliente usa `VITE_AUTH_URL` para los endpoints de autenticación.
+- `VITE_ADMIN_URL` es la base para las llamadas al backend administrativo de `restaurant-manager`.
+- Asegúrate de iniciar primero `authentication-service` y `restaurant-manager`.
+
+## Licencia
+MIT
