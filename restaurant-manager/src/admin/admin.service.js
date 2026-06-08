@@ -1,9 +1,5 @@
 import { pool } from '../config/db.js';
 
-/**
- * Panel de estadísticas globales para el administrador de la plataforma.
- * Agrega métricas de demanda, desempeño de restaurantes y rendimiento del sistema.
- */
 export const getGlobalStats = async () => {
   const [
     restaurants,
