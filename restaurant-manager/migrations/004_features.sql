@@ -1,4 +1,3 @@
--- Brasa-33: restaurant hours, inventory, notifications, table availability, order paid_at
 
 ALTER TABLE restaurants ADD COLUMN IF NOT EXISTS category VARCHAR(100);
 ALTER TABLE restaurants ADD COLUMN IF NOT EXISTS opening_time TIME;
