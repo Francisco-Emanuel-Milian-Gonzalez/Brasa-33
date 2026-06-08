@@ -1,4 +1,3 @@
--- Brasa-33: migraciones consolidadas (user_id VARCHAR, manager_id, payment columns)
 
 ALTER TABLE reservations ALTER COLUMN user_id TYPE VARCHAR(50);
 ALTER TABLE orders ALTER COLUMN user_id TYPE VARCHAR(50);
