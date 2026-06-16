@@ -74,10 +74,19 @@ export const getAllOrders = async () => {
 
 export const getOrdersByRestaurant = async (restaurantId) => {
   const query = `
-    SELECT id, user_id, total, status, restaurant_id, notes, created_at
-    FROM orders
-    WHERE restaurant_id = $1
-    ORDER BY created_at DESC
+    SELECT DISTINCT o.id, o.user_id, o.total, o.status, o.restaurant_id, o.notes, o.created_at
+    FROM orders o
+    WHERE o.restaurant_id = $1
+       OR (
+         o.restaurant_id IS NULL
+         AND EXISTS (
+           SELECT 1
+           FROM order_items oi
+           JOIN menu m ON m.id = oi.menu_id
+           WHERE oi.order_id = o.id AND m.restaurant_id = $1
+         )
+       )
+    ORDER BY o.created_at DESC
   `;
   const { rows } = await pool.query(query, [restaurantId]);
   return rows;

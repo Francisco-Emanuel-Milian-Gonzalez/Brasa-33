@@ -63,6 +63,7 @@ export const createOrder = async (userId, items, restaurantId = null, notes = nu
 
   let total = 0;
   const validatedItems = [];
+  let resolvedRestaurantId = restaurantId != null ? Number(restaurantId) : null;
 
   for (const item of items) {
     const dish = await getDishById(item.menu_id);
@@ -75,6 +76,18 @@ export const createOrder = async (userId, items, restaurantId = null, notes = nu
 
     if (dish.stock < item.quantity) {
       const error = new Error(`Stock insuficiente para ${dish.name}. Disponibles: ${dish.stock}`);
+      error.status = 400;
+      throw error;
+    }
+
+    if (!resolvedRestaurantId && dish.restaurant_id) {
+      resolvedRestaurantId = dish.restaurant_id;
+    } else if (
+      resolvedRestaurantId
+      && dish.restaurant_id
+      && Number(dish.restaurant_id) !== Number(resolvedRestaurantId)
+    ) {
+      const error = new Error('Todos los platos deben ser del mismo restaurante');
       error.status = 400;
       throw error;
     }
@@ -98,7 +111,7 @@ export const createOrder = async (userId, items, restaurantId = null, notes = nu
       client,
       userId,
       orderTotal,
-      restaurantId,
+      resolvedRestaurantId,
       notes,
       paymentMethod,
       cardLastFour,
@@ -114,8 +127,8 @@ export const createOrder = async (userId, items, restaurantId = null, notes = nu
     }
     await client.query('COMMIT');
 
-    if (restaurantId) {
-      await notifyRestaurantManager(restaurantId, {
+    if (resolvedRestaurantId) {
+      await notifyRestaurantManager(resolvedRestaurantId, {
         title: 'Nuevo pedido recibido',
         message: `Pedido #${order.id} — ${paymentMethod === 'card' ? 'tarjeta' : 'contra entrega'}`,
         type: 'order',

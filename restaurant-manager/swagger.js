@@ -1,5 +1,9 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 
+/**
+ * Configuración de OpenAPI 3.0.0 para Swagger
+ * Define la información general de la API, servidores, esquemas de seguridad y referencias
+ */
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -33,6 +37,9 @@ const options = {
         },
       },
       schemas: {
+        /**
+         * Restaurante
+         */
         Restaurant: {
           type: 'object',
           properties: {
@@ -59,6 +66,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Plato de Menú
+         */
         Dish: {
           type: 'object',
           properties: {
@@ -93,6 +104,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Orden
+         */
         Order: {
           type: 'object',
           properties: {
@@ -135,6 +150,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Pago
+         */
         Payment: {
           type: 'object',
           properties: {
@@ -171,6 +190,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Reservación
+         */
         Reservation: {
           type: 'object',
           properties: {
@@ -210,6 +233,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Respuesta de Éxito Genérica
+         */
         SuccessResponse: {
           type: 'object',
           properties: {
@@ -222,6 +249,10 @@ const options = {
             },
           },
         },
+
+        /**
+         * Respuesta de Error Genérica
+         */
         ErrorResponse: {
           type: 'object',
           properties: {
