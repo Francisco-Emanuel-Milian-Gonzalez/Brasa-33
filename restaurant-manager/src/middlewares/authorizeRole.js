@@ -1,3 +1,10 @@
+/**
+ * Middleware de autorización por rol.
+ * Debe usarse DESPUÉS de validateJwt, ya que depende de req.user.
+ *
+ * Acepta los nombres de rol tanto en formato nuevo (ADMIN_ROLE, MANAGER_ROLE, CLIENT_ROLE)
+ * como en formato corto (admin, manager, client) para compatibilidad.
+ */
 
 const ROLE_NORMALIZE = {
   admin:       'ADMIN_ROLE',

@@ -1,4 +1,11 @@
+-- ============================================================
+-- BRASA 33 - Restaurant Manager: Schema Completo
+-- Ejecutar en orden. Compatible con PostgreSQL 13+
+-- ============================================================
 
+-- ============================================================
+-- TABLAS BASE (existentes - crear si no existen)
+-- ============================================================
 
 CREATE TABLE IF NOT EXISTS restaurants (
   id          SERIAL PRIMARY KEY,
@@ -75,6 +82,9 @@ CREATE TABLE IF NOT EXISTS reservations (
   created_at    TIMESTAMP    DEFAULT NOW()
 );
 
+-- ============================================================
+-- NUEVAS TABLAS
+-- ============================================================
 
 CREATE TABLE IF NOT EXISTS tables (
   id            SERIAL PRIMARY KEY,
@@ -124,6 +134,11 @@ CREATE TABLE IF NOT EXISTS invoices (
   issued_at  TIMESTAMP     DEFAULT NOW()
 );
 
+-- ============================================================
+-- MIGRACIONES SOBRE TABLAS EXISTENTES
+-- (ejecutar con IF NOT EXISTS / DO BLOCK para idempotencia)
+-- ============================================================
+
 DO $$
 BEGIN
   -- menu: category
@@ -168,6 +183,9 @@ BEGIN
   ) THEN
     ALTER TABLE orders ADD COLUMN notes TEXT;
   END IF;
+
+  -- orders: status constraint (agrega preparing y ready)
+  -- (no se puede modificar CHECK directamente; se borra y recrea)
 
   -- reservations: type
   IF NOT EXISTS (
@@ -220,6 +238,10 @@ BEGIN
 
 END $$;
 
+-- ============================================================
+-- ÍNDICES (performance)
+-- ============================================================
+
 CREATE INDEX IF NOT EXISTS idx_menu_restaurant       ON menu(restaurant_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user           ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_restaurant     ON orders(restaurant_id);
@@ -238,6 +260,7 @@ CREATE INDEX IF NOT EXISTS idx_promotions_status     ON promotions(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_order        ON invoices(order_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_user         ON invoices(user_id);
 
+-- Asignación gerente ↔ restaurante (user_id del auth-service)
 CREATE TABLE IF NOT EXISTS restaurant_managers (
   id            SERIAL PRIMARY KEY,
   user_id       VARCHAR(50) NOT NULL UNIQUE,

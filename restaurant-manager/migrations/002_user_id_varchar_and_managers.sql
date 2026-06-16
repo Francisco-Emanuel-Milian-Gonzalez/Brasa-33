@@ -1,3 +1,5 @@
+-- Migración: user_id como VARCHAR (IDs del auth-service) + asignación manager-restaurante
+-- Ejecutar en la base brasa33
 
 ALTER TABLE reservations ALTER COLUMN user_id TYPE VARCHAR(50);
 ALTER TABLE orders       ALTER COLUMN user_id TYPE VARCHAR(50);

@@ -1,4 +1,8 @@
-
+/**
+ * Global Error Handler Middleware
+ * Maneja todos los errores de la aplicación de forma centralizada
+ * Proporciona respuestas estandarizadas en JSON
+ */
 export const errorHandler = (err, req, res, next) => {
   const status = err.status || err.statusCode || 500;
   const message = err.message || 'Error interno del servidor';

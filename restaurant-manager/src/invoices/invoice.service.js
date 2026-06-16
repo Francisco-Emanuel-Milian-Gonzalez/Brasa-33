@@ -22,6 +22,7 @@ const mapOrderItemsForInvoice = (items = []) =>
     };
   });
 
+/** Respuesta unificada para el frontend (montos + líneas del pedido). */
 export const buildInvoiceResponse = async (invoiceRow) => {
   if (!invoiceRow) return null;
 
@@ -48,6 +49,7 @@ export const buildInvoiceAmounts = (orderTotal) => {
   return { subtotal, tax, total };
 };
 
+/** Genera factura para un pedido (uso interno al completar contra entrega). */
 export const createInvoiceForOrder = async (orderId, userId) => {
   const order = await getOrderWithItemsForInvoice(orderId);
   if (!order) {
