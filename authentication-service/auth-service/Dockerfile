@@ -9,7 +9,9 @@ COPY src/AuthService.Persistence/AuthService.Persistence.csproj src/AuthService.
 RUN dotnet restore AuthService.sln
 
 COPY . .
-RUN dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore
+RUN find . -type d \( -iname "bin" -o -iname "obj" \) -prune -exec rm -rf {} + \
+    && dotnet restore AuthService.sln \
+    && dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
