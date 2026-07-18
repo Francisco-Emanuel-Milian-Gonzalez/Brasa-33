@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HjyOQje0AqY=",
+  "dgSpecHash": "3ssVI9jRvy8=",
   "success": true,
-  "projectFilePath": "C:\\trabajos\\Brasa-33-main\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
+  "projectFilePath": "C:\\trabajos\\Brasa-33\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\elips\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\elips\\.nuget\\packages\\cloudinarydotnet\\1.27.7\\cloudinarydotnet.1.27.7.nupkg.sha512",
