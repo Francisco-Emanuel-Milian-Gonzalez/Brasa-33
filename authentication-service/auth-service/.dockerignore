@@ -1,0 +1,4 @@
+git rm -r --cached src/AuthService.Api/bin src/AuthService.Api/obj
+git rm -r --cached src/AuthService.Application/bin src/AuthService.Application/obj
+git rm -r --cached src/AuthService.Domain/bin src/AuthService.Domain/obj
+git rm -r --cached src/AuthService.Persistence/bin src/AuthService.Persistence/obj

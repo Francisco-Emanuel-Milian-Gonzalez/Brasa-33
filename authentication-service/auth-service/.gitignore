@@ -1,0 +1,97 @@
+==> It looks like we don't have access to your repo, but we'll try to clone it anyway.
+==> Cloning from https://github.com/Francisco-Emanuel-Milian-Gonzalez/Brasa-33
+==> Checking out commit 69bd809a6deb281a9ff086e280ce07dfef7789b3 in branch main
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 806B done
+#1 DONE 0.0s
+#2 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:8.0
+#2 ...
+#3 [internal] load metadata for mcr.microsoft.com/dotnet/aspnet:8.0
+#3 DONE 0.6s
+#2 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:8.0
+#2 DONE 0.7s
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+#5 [stage-1 1/3] FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a
+#5 resolve mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a 0.0s done
+#5 DONE 0.1s
+#6 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597
+#6 resolve mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597 0.0s done
+#6 ...
+#7 [internal] load build context
+#7 transferring context: 48.25MB 0.2s done
+#7 DONE 0.3s
+#5 [stage-1 1/3] FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a
+#5 extracting sha256:68629629b516c3cd6f5e71ffbe18e32afb1ae5b4926c92d058c0f11ef1fd58a3
+#5 extracting sha256:68629629b516c3cd6f5e71ffbe18e32afb1ae5b4926c92d058c0f11ef1fd58a3 0.8s done
+#5 extracting sha256:5cc52b0eabac9e33649ff857181545e129e3763895cd0c30a82ef5a4f532659f
+#5 ...
+#6 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597
+#6 DONE 1.9s
+#5 [stage-1 1/3] FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a
+#5 extracting sha256:5cc52b0eabac9e33649ff857181545e129e3763895cd0c30a82ef5a4f532659f 1.7s done
+#5 DONE 3.4s
+#5 [stage-1 1/3] FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a
+#5 extracting sha256:33ab927dd0b40e0e12b1c744ea555a3d4bd3d5134535dfbda2d86ee99a868ea0 0.0s done
+#5 extracting sha256:369e46e487316155d09f898ec50c02180d49f7ac3f9a3f6069b0d21d80557714
+#5 extracting sha256:369e46e487316155d09f898ec50c02180d49f7ac3f9a3f6069b0d21d80557714 0.6s done
+#5 DONE 4.0s
+#5 [stage-1 1/3] FROM mcr.microsoft.com/dotnet/aspnet:8.0@sha256:9822a6201c64c9f38b8a190832a7ae21cd30150d509b3ea170fd83b4f4e6166a
+#5 extracting sha256:0e5539ed2775bdbdae40e349b882518e23f72473c3c0ee9b36fbe3b48430ff6d 0.0s done
+#5 extracting sha256:e1832c1b48a6042dc2be559908683ef9dae2586a8d8e47c9c9fbc48c6aa03c2e
+#5 extracting sha256:e1832c1b48a6042dc2be559908683ef9dae2586a8d8e47c9c9fbc48c6aa03c2e 0.2s done
+#5 DONE 4.2s
+#8 [stage-1 2/3] WORKDIR /app
+#8 DONE 0.0s
+#6 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597
+#6 extracting sha256:f643d834db55faad1eb60e02f90129bbc582d5780c4ab56e4f2c610a7f5b9583
+#6 extracting sha256:f643d834db55faad1eb60e02f90129bbc582d5780c4ab56e4f2c610a7f5b9583 0.9s done
+#6 DONE 2.8s
+#6 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597
+#6 extracting sha256:b0d7d832459327548cd7a8510001f16e317e0620d38b30d75a6ba9c5b1a1482d
+#6 extracting sha256:b0d7d832459327548cd7a8510001f16e317e0620d38b30d75a6ba9c5b1a1482d 5.3s done
+#6 DONE 8.1s
+#6 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:89ce6291bde9acdf59594e79fb8277c6d84c46e4b1f5bf126a4f18766e4bd597
+#6 extracting sha256:669b654f76f36f76f7e9ee1d5a81a55def35a6aab072f561e6417db52da31b7a 0.0s done
+#6 extracting sha256:4a1adfe703f2293ec5cde3dd610e571357be78d64c0d3de84e96ca94d8439dbf
+#6 extracting sha256:4a1adfe703f2293ec5cde3dd610e571357be78d64c0d3de84e96ca94d8439dbf 0.4s done
+#6 DONE 8.5s
+#9 [build  2/10] WORKDIR /src
+#9 DONE 0.0s
+#10 [build  3/10] COPY AuthService.sln ./
+#10 DONE 0.0s
+#11 [build  4/10] COPY src/AuthService.Api/AuthService.Api.csproj src/AuthService.Api/
+#11 DONE 0.0s
+#12 [build  5/10] COPY src/AuthService.Application/AuthService.Application.csproj src/AuthService.Application/
+#12 DONE 0.0s
+#13 [build  6/10] COPY src/AuthService.Domain/AuthService.Domain.csproj src/AuthService.Domain/
+#13 DONE 0.0s
+#14 [build  7/10] COPY src/AuthService.Persistence/AuthService.Persistence.csproj src/AuthService.Persistence/
+#14 DONE 0.0s
+#15 [build  8/10] RUN dotnet restore AuthService.sln
+#15 1.076   Determining projects to restore...
+#15 2.550   Restored /src/src/AuthService.Domain/AuthService.Domain.csproj (in 996 ms).
+#15 7.286 /src/src/AuthService.Application/AuthService.Application.csproj : warning NU1902: Package 'MailKit' 4.13.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-9j88-vvj5-vhgr [/src/AuthService.sln]
+#15 7.406   Restored /src/src/AuthService.Application/AuthService.Application.csproj (in 5.85 sec).
+#15 7.406   Restored /src/src/AuthService.Persistence/AuthService.Persistence.csproj (in 5.85 sec).
+#15 7.407   Restored /src/src/AuthService.Api/AuthService.Api.csproj (in 5.85 sec).
+#15 DONE 7.5s
+#16 [build  9/10] COPY . .
+#16 DONE 1.6s
+#17 [build 10/10] RUN dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore
+#17 0.788 /usr/share/dotnet/sdk/8.0.423/Sdks/Microsoft.NET.Sdk/targets/Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1064: Package Microsoft.CodeAnalysis.Analyzers, version 3.3.4 was not found. It might have been deleted since NuGet restore. Otherwise, NuGet restore might have only partially completed, which might have been due to maximum path length restrictions. [/src/src/AuthService.Api/AuthService.Api.csproj]
+#17 ERROR: process "/bin/sh -c dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore" did not complete successfully: exit code: 1
+------
+ > [build 10/10] RUN dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore:
+0.788 /usr/share/dotnet/sdk/8.0.423/Sdks/Microsoft.NET.Sdk/targets/Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1064: Package Microsoft.CodeAnalysis.Analyzers, version 3.3.4 was not found. It might have been deleted since NuGet restore. Otherwise, NuGet restore might have only partially completed, which might have been due to maximum path length restrictions. [/src/src/AuthService.Api/AuthService.Api.csproj]
+------
+Dockerfile:12
+--------------------
+  10 |     
+  11 |     COPY . .
+  12 | >>> RUN dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore
+  13 |     
+  14 |     FROM mcr.microsoft.com/dotnet/aspnet:8.0
+--------------------
+error: failed to solve: process "/bin/sh -c dotnet publish src/AuthService.Api/AuthService.Api.csproj -c Release -o /app --no-restore" did not complete successfully: exit code: 1
